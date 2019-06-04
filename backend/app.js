@@ -42,7 +42,12 @@ app.post(`/api/posts`, (req, res, nex) => {
     title: req.body.title,
     content: req.body.content
   });
-  post.save(); // mongoose, creates query based on model.
+  post.save().then(createdPost => {
+    res.status(201).json({
+      message: `Post added successfully`,
+      postId: createdPost._id
+    })
+  }); // mongoose, creates query based on model.
   res.status(201).json({
     message: `Post added successfully!`
   }); // OK
