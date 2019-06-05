@@ -5,11 +5,12 @@
     </mat-expansion-panel-header>
     <p>{{post.content}}</p>
     <mat-action-row>
-      <button
+      <a
         mat-button
-        color="primary">
+        color="primary"
+        [routerLink]="['/edit', post.id]"> <!-- dynamic link -->
         EDIT
-      </button>
+    </a>
       <button
         mat-button
         color="warn"
