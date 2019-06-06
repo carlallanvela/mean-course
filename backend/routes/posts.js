@@ -59,4 +59,4 @@ route.delete('/:id', (req, res, next) => {
   res.status(200).json({message: 'Post deleted!'});
 });
 
-module.exposts = router;
+module.exports = route;
