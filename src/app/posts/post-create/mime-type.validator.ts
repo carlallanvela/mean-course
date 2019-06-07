@@ -1,5 +1,5 @@
 import { AbstractControl } from '@angular/forms';
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, of } from 'rxjs';
 
  /**
   * Image Validator.
@@ -10,6 +10,9 @@ export const mimeType = (
     //  mimeType function returns async Promise/Observable
     // Promise should have a value that has a 'key' string, we don't
     //  care about name. aka dynamic prop name
+    if (typeof(control.value) === 'string') {
+      return of(null); // Observable
+    }
     const file = control.value as File;
     const fileReader = new FileReader();
     // Convert a sync function to an observable

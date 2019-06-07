@@ -11,7 +11,7 @@ import { mimeType } from './mime-type.validator';
   styleUrls: ['./post-create.component.css']
 })
 export class PostCreateComponent implements OnInit {
-  enteredTitle  = '';
+  enteredTitle = '';
   enteredContent = '';
   post: Post;
   isLoading = false;
@@ -22,8 +22,10 @@ export class PostCreateComponent implements OnInit {
   // Create form programitacally for Reactive
   form: FormGroup;
 
-  constructor(public postsService: PostsService,
-              public route: ActivatedRoute) {}
+  constructor(
+    public postsService: PostsService,
+    public route: ActivatedRoute
+  ) {}
 
   /**
    * Template Form approach
@@ -42,7 +44,7 @@ export class PostCreateComponent implements OnInit {
             id: postData._id,
             title: postData.title,
             content: postData.content,
-            imagePath: null
+            imagePath: postData.imagePath
           };
         });
       } else {
@@ -83,7 +85,8 @@ export class PostCreateComponent implements OnInit {
           };
           this.form.setValue({
             title: this.post.title,
-            content: this.post.content
+            content: this.post.content,
+            image: this.post.imagePath
           });
         });
       } else {
@@ -105,13 +108,15 @@ export class PostCreateComponent implements OnInit {
       this.postsService.addPost(
         form.value.title,
         form.value.content,
-        form.value.image);
+        form.value.image
+      );
     } else {
       this.postsService.updatePost(
         this.postId,
         form.value.title,
-        form.value.content
-        );
+        form.value.content,
+        form.value.imagePath
+      );
     }
     form.resetForm();
   }
@@ -126,13 +131,15 @@ export class PostCreateComponent implements OnInit {
       this.postsService.addPost(
         this.form.value.title,
         this.form.value.content,
-        this.form.value.image);
+        this.form.value.image
+      );
     } else {
       this.postsService.updatePost(
         this.postId,
         this.form.value.title,
-        this.form.value.content
-        );
+        this.form.value.content,
+        this.form.value.image
+      );
     }
     this.form.reset();
   }
@@ -141,7 +148,7 @@ export class PostCreateComponent implements OnInit {
     // Typescript Type conversion (casting)
     const file = (event.target as HTMLInputElement).files[0];
     // Allows you to target a single control
-    this.form.patchValue({image: file});
+    this.form.patchValue({ image: file });
     // Changed the value and should check if its valid
     this.form.get('image').updateValueAndValidity();
     const reader = new FileReader();
