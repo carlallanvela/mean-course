@@ -1,8 +1,8 @@
+<!-- Template Driven Approach (FormsModule) -> ngModel functions, validators -->
 <mat-card>
     <mat-spinner *ngIf="isLoading"></mat-spinner>
     <form (submit)="onSavePost(postForm)" #postForm="ngForm" *ngIf="!isLoading">
-      <!-- Template Driven Approach (FormsModule) -> ngModel functions, validators -->
-      <!--post>.title: angular checks if post exist before getting title -->
+      <!--post?.title: angular checks if post exist before getting title -->
       <mat-form-field>
         <input
           matInput

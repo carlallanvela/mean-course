@@ -38,7 +38,10 @@ export class PostCreateComponent implements OnInit {
         this.postsService.getPost(this.postId).subscribe(postData => {
           // Spinner
           this.isLoading = false;
-          this.post = {id: postData._id, title: postData.title, content: postData.content};
+          this.post = {
+            id: postData._id,
+            title: postData.title,
+            content: postData.content};
         });
       } else {
         this.mode = 'create';
@@ -58,7 +61,7 @@ export class PostCreateComponent implements OnInit {
       }),
       image: new FormControl(null, {
         validators: [Validators.required],
-        asyncValidators: [mimeType]
+        asyncValidators: [mimeType] // Customized Validator mimeType
       })
     });
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
@@ -98,7 +101,8 @@ export class PostCreateComponent implements OnInit {
     if (this.mode === 'create') {
       this.postsService.addPost(
         form.value.title,
-        form.value.content);
+        form.value.content,
+        form.value.image);
     } else {
       this.postsService.updatePost(
         this.postId,
@@ -118,7 +122,8 @@ export class PostCreateComponent implements OnInit {
     if (this.mode === 'create') {
       this.postsService.addPost(
         this.form.value.title,
-        this. form.value.content);
+        this.form.value.content,
+        this.form.value.image);
     } else {
       this.postsService.updatePost(
         this.postId,
