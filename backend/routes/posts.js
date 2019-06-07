@@ -6,8 +6,8 @@ const route = express.Router();
 
 const MIME_TYPE_MAP = {
   'image/png': 'png',
-  'image/jpeg' : 'jpg',
-  'img/jpg' : 'jpg'
+  'image/jpeg': 'jpg',
+  'img/jpg': 'jpg'
 };
 
 const storage = multer.diskStorage({
@@ -28,15 +28,24 @@ const storage = multer.diskStorage({
 });
 
 // Multer will extract image
-route.post('', multer({storage: storage}).single('image'), (req, res, nex) => {
+route.post('', multer({ storage: storage }).single('image'), (req, res, nex) => {
+  const url = req.protocol + '://' + req.get('host');
   const post = Post({
     title: req.body.title,
-    content: req.body.content
+    content: req.body.content,
+    imagePath: url + '/images/' + req.file.filename
   });
   post.save().then(createdPost => {
     res.status(201).json({
       message: 'Post added successfully',
-      postId: createdPost._id
+      post: {
+        ...createdPost,
+        id: createdPost._id
+        // Spread operator gets all of these
+        //title: createdPost.title,
+        //content: createdPost.content,
+        //imagePath: createdPost.imagePath
+      }
     })
   }); // mongoose, creates query based on model.
   res.status(201).json({
@@ -66,7 +75,7 @@ route.put('/:id', (req, res, next) => {
     title: req.body.title,
     content: req.body.content
   });
-  Post.updateOne({_id: req.params.id}, post).then(result => {
+  Post.updateOne({ _id: req.params.id }, post).then(result => {
     console.log(result);
     res.status(200).json({ message: 'Update successful!' });
   });
@@ -88,16 +97,16 @@ route.get('/:id'), (req, res, next) => {
     if (post) {
       res.status(200).json(post);
     } else {
-      res.status(400).json({message: 'Pos not found'});
+      res.status(400).json({ message: 'Pos not found' });
     }
   });
 }
 
 route.delete('/:id', (req, res, next) => {
-  Post.deleteOne({_id: req.params.id}).then(result => {
+  Post.deleteOne({ _id: req.params.id }).then(result => {
     console.log(result);
   });
-  res.status(200).json({message: 'Post deleted!'});
+  res.status(200).json({ message: 'Post deleted!' });
 });
 
 module.exports = route;
