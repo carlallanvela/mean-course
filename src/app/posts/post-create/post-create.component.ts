@@ -3,6 +3,7 @@ import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
 import { PostsService } from '../posts.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Post } from '../post.model';
+import { mimeType } from './mime-type.validator';
 
 @Component({
   selector: 'app-post-create',
@@ -16,6 +17,7 @@ export class PostCreateComponent implements OnInit {
   isLoading = false;
   private mode = 'create';
   private postId: string;
+  imagePreview: string;
 
   // Create form programitacally for Reactive
   form: FormGroup;
@@ -53,6 +55,10 @@ export class PostCreateComponent implements OnInit {
       }),
       content: new FormControl(null, {
         validators: [Validators.required]
+      }),
+      image: new FormControl(null, {
+        validators: [Validators.required],
+        asyncValidators: [mimeType]
       })
     });
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
@@ -121,5 +127,19 @@ export class PostCreateComponent implements OnInit {
         );
     }
     this.form.reset();
+  }
+
+  onImagePicked(event: Event) {
+    // Typescript Type conversion (casting)
+    const file = (event.target as HTMLInputElement).files[0];
+    // Allows you to target a single control
+    this.form.patchValue({image: file});
+    // Changed the value and should check if its valid
+    this.form.get('image').updateValueAndValidity();
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result as string;
+    };
+    reader.readAsDataURL(file);
   }
 }
