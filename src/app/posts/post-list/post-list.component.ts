@@ -12,7 +12,7 @@ import { PageEvent } from '@angular/material';
 export class PostListComponent implements OnInit, OnDestroy {
   posts: Post[] = [];
   isLoading = false;
-  totalPosts = 10;
+  totalPosts = 0;
   postsPerPage = 5;
   currentPage = 1;
   pageSizeOptions = [1, 2, 5, 10];
@@ -20,13 +20,15 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   // Think dependency injection of PostsService
   constructor(public postsService: PostsService) {}
+
   ngOnInit() {
     this.isLoading = true;
     this.postsService.getPosts(this.postsPerPage, this.currentPage);
     this.postSubscription = this.postsService.getPostsUpdateListener()
-      .subscribe((posts: Post[]) => {
+      .subscribe((postData: {posts: Post[], postCount: number}) => {
         this.isLoading = false;
-        this.posts = posts;
+        this.totalPosts = postData.postCount;
+        this.posts = postData.posts;
       });
   }
 
@@ -36,6 +38,8 @@ export class PostListComponent implements OnInit, OnDestroy {
   }
 
   onChangedPage(pageData: PageEvent) {
+    // Show spinner when changing page
+    this.isLoading = true;
     // Index at 0 so we need to add 1
     this.currentPage = pageData.pageIndex + 1;
     this.postsPerPage = pageData.pageSize;
@@ -43,7 +47,9 @@ export class PostListComponent implements OnInit, OnDestroy {
   }
 
   onDelete(postId: string) {
-    console.log(`On post-list.components.ts, deleting ` + postId);
-    this.postsService.deletePost(postId);
+    this.isLoading = true;
+    this.postsService.deletePost(postId).subscribe(() => {
+      this.postsService.getPosts(this.postsPerPage, this.currentPage);
+    });
   }
 }

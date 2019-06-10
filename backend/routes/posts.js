@@ -2,7 +2,7 @@ const express = require('express');
 const Post = require('../models/post');
 const multer = require('multer');
 
-const route = express.Router();
+const router = express.Router();
 
 const MIME_TYPE_MAP = {
   'image/png': 'png',
@@ -28,7 +28,7 @@ const storage = multer.diskStorage({
 });
 
 // Multer will extract image
-route.post('', multer({ storage: storage }).single('image'), (req, res, nex) => {
+router.post('', multer({ storage: storage }).single('image'), (req, res, nex) => {
   const url = req.protocol + '://' + req.get('host');
   const post = Post({
     title: req.body.title,
@@ -53,7 +53,7 @@ route.post('', multer({ storage: storage }).single('image'), (req, res, nex) => 
   }); // OK
 });
 
-route.post('', (req, res, nex) => {
+router.post('', (req, res, nex) => {
   const post = Post({
     title: req.body.title,
     content: req.body.content
@@ -69,7 +69,7 @@ route.post('', (req, res, nex) => {
   }); // OK
 });
 
-route.put(
+router.put(
   '/:id',
   multer({ storage: storage }).single('image'),
   (req, res, next) => {
@@ -89,12 +89,13 @@ route.put(
     });
   });
 
-route.get('', (req, res, next) => {
+router.get('', (req, res, next) => {
   // Holds parsed query params
   // req.query;
   const pageSize = +req.query.pagesize; // turn to int
   const currentPage = req.query.page;
   const postQuery = Post.find();
+  let fetchedPosts;
   if (pageSize && currentPage) {
     postQuery
       .skip(pageSize * (currentPage - 1)) // skip previous pages
@@ -102,14 +103,19 @@ route.get('', (req, res, next) => {
   }
   postQuery
     .then(documents => {
+      fetchedPosts = documents;
+      return Post.count();
+    })
+    .then(count => {
       res.status(200).json({
-        message: 'Post fetched successfully!',
-        posts: documents
+        message: 'Posts fetched successfully!',
+        posts: fetchedPosts,
+        maxPosts: count
       });
     });
 });
 
-route.get('/:id'), (req, res, next) => {
+router.get('/:id'), (req, res, next) => {
   // Encoded ID from URL
   Post.findById(req.params.id).then(post => {
     if (post) {
@@ -120,11 +126,11 @@ route.get('/:id'), (req, res, next) => {
   });
 }
 
-route.delete('/:id', (req, res, next) => {
+router.delete('/:id', (req, res, next) => {
   Post.deleteOne({ _id: req.params.id }).then(result => {
     console.log(result);
   });
   res.status(200).json({ message: 'Post deleted!' });
 });
 
-module.exports = route;
+module.exports = router;
