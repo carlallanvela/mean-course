@@ -8,14 +8,33 @@ const userRoutes = require('./routes/user');
 
 const app = express();
 
+// 1. Download MongoDB MSI
+// 2. Create C:/data/log C:data/db
+// 3. Update local config
+// systemLog:
+//     destination: file
+//     path: c:\data\log\mongod.log
+// storage:
+//     dbPath: c:\data\db
+// 4. run mongod.exe --config [dir of mongod.cfg]
+// 5. Create Local User
+// db.createUser({user:'admin', pwd:'dummy', roles:[
+//   {role:'readWrite', db:'node-angular'}
+// ]});
+
+
+//const dbUrl = 'mongodb+srv://admin:dummy@cluster1-ojzmt.mongodb.net/node-angular?retryWrites=true&w=majority'
+const dbUrl = 'mongodb://admin:dummy@localhost:27017'
+
+// mongoose.connect(
+//   dbUrl,
+//   {
+//     useNewUrlParser: true
+//   }
+// )
+
 mongoose.connect(
-  'mongodb+srv://admin:dummy@cluster1-ojzmt.mongodb.net/',
-  {
-    keepAlive: true,
-    socketTimeoutMS: 30000,
-    dbName: 'node-angular',
-    useNewUrlParser: true
-  }
+  dbUrl
 )
   .then(() => {
     console.log('Connected to database!');
