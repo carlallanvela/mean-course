@@ -49,10 +49,7 @@ router.post('', multer({ storage: storage }).single('image'), (req, res, nex) =>
         //imagePath: createdPost.imagePath
       }
     })
-  }); // mongoose, creates query based on model.
-  res.status(201).json({
-    message: 'Post added successfully!'
-  }); // OK
+  });
 });
 
 router.post('', (req, res, nex) => {

@@ -22,23 +22,18 @@ const app = express();
 //   {role:'readWrite', db:'node-angular'}
 // ]});
 
-
 //const dbUrl = 'mongodb+srv://admin:dummy@cluster1-ojzmt.mongodb.net/node-angular?retryWrites=true&w=majority'
 const dbUrl = 'mongodb://admin:dummy@localhost:27017'
 
-// mongoose.connect(
-//   dbUrl,
-//   {
-//     useNewUrlParser: true
-//   }
-// )
-
 mongoose.connect(
   dbUrl
-)
-  .then(() => {
-    console.log('Connected to database!');
-  })
+  // ,
+  // {
+  //   useNewUrlParser: true
+  // }
+).then(() => {
+  console.log('Connected to database!');
+})
   .catch((err) => {
     console.log('Connection failed!', err.message);
   });
