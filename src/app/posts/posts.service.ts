@@ -1,20 +1,23 @@
-import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { Post } from './post.model';
-import { map } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { Injectable } from "@angular/core";
+import { Subject } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { Post } from "./post.model";
+import { map } from "rxjs/operators";
+import { Router } from "@angular/router";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class PostsService {
   private posts: Post[] = [];
   private postsUpdated = new Subject<Post[]>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  getPosts() {
+  getPosts(postsPerPage: number, currentPage: number) {
+    const queryParams = `?pagesize=${postsPerPage}&page=${currentPage}`;
     this.http
-      .get<{ message: string; posts: any }>('http://localhost:3000/api/posts')
+      .get<{ message: string; posts: any }>(
+        "http://localhost:3000/api/posts" + queryParams
+      )
       .pipe(
         map(postData => {
           return postData.posts.map(post => {
@@ -41,18 +44,21 @@ export class PostsService {
     // Spread operator ...
     // spread values of array in func
     // return {...this.posts.find(p => p.id === id)};
-    return this.http.get<{ _id: string; title: string; content: string, imagePath: string }>(
-      `http://localhost:3000/api/posts/${id}`
-    );
+    return this.http.get<{
+      _id: string;
+      title: string;
+      content: string;
+      imagePath: string;
+    }>(`http://localhost:3000/api/posts/${id}`);
   }
 
   addPost(title: string, content: string, image: File) {
     // Data Format which allows us
     // to combine text and blob (file)
     const postData = new FormData();
-    postData.append('title', title);
-    postData.append('content', content);
-    postData.append('image', image, title);
+    postData.append("title", title);
+    postData.append("content", content);
+    postData.append("image", image, title);
     this.http
       .post<{ message: string; post: Post }>(
         `http://localhost:3000/api/posts`,
@@ -67,18 +73,18 @@ export class PostsService {
         };
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
-        this.router.navigate(['/']);
+        this.router.navigate(["/"]);
       });
   }
 
   updatePost(id: string, title: string, content: string, image: File | string) {
     let postData: Post | FormData;
-    if (typeof(image) === 'object') {
+    if (typeof image === "object") {
       postData = new FormData();
-      postData.append('id', id);
-      postData.append('title', title);
-      postData.append('content', content);
-      postData.append('image', image, title);
+      postData.append("id", id);
+      postData.append("title", title);
+      postData.append("content", content);
+      postData.append("image", image, title);
     } else {
       const postData: Post = {
         id: id,
@@ -103,11 +109,11 @@ export class PostsService {
           title: title,
           content: content,
           imagePath: ""
-        }
+        };
         updatedPosts[oldPostIndex] = post;
         this.posts = updatedPosts; // Immutable way to update post
         this.postsUpdated.next([...this.posts]);
-        this.router.navigate(['/']);
+        this.router.navigate(["/"]);
       });
   }
 
@@ -122,4 +128,3 @@ export class PostsService {
       });
   }
 }
-

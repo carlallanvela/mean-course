@@ -71,26 +71,36 @@ route.post('', (req, res, nex) => {
 
 route.put(
   '/:id',
-  multer({ storage: storage}).single('image'),
+  multer({ storage: storage }).single('image'),
   (req, res, next) => {
     let imagePath = req.body.imagePath;
-  if (req.file) {
-    const url = req.protocol + '://' + req.get('host');
-    imagePath = url + '/images/' + req.file.filename;
-  }
-  const post = new Post({
-    _id: req.body.id,
-    title: req.body.title,
-    content: req.body.content,
-    imagePath: imagePath
+    if (req.file) {
+      const url = req.protocol + '://' + req.get('host');
+      imagePath = url + '/images/' + req.file.filename;
+    }
+    const post = new Post({
+      _id: req.body.id,
+      title: req.body.title,
+      content: req.body.content,
+      imagePath: imagePath
+    });
+    Post.updateOne({ _id: req.params.id }, post).then(result => {
+      res.status(200).json({ message: 'Update successful!' });
+    });
   });
-  Post.updateOne({ _id: req.params.id }, post).then(result => {
-    res.status(200).json({ message: 'Update successful!' });
-  });
-});
 
 route.get('', (req, res, next) => {
-  Post.find()
+  // Holds parsed query params
+  // req.query;
+  const pageSize = +req.query.pagesize; // turn to int
+  const currentPage = req.query.page;
+  const postQuery = Post.find();
+  if (pageSize && currentPage) {
+    postQuery
+      .skip(pageSize * (currentPage - 1)) // skip previous pages
+      .limit(pageSize); // limit doc we return
+  }
+  postQuery
     .then(documents => {
       res.status(200).json({
         message: 'Post fetched successfully!',
