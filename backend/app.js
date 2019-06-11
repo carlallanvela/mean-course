@@ -8,6 +8,7 @@ const userRoutes = require('./routes/user');
 
 const app = express();
 
+// Setting up Local if cluster is not available.
 // 1. Download MongoDB MSI
 // 2. Create C:/data/log C:data/db
 // 3. Update local config
@@ -48,7 +49,7 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
     'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   );
   res.setHeader(
     'Access-Control-Allow-Methods',
