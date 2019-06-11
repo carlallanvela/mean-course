@@ -22,6 +22,7 @@ const app = express();
 //   {role:'readWrite', db:'node-angular'}
 // ]});
 
+// MongoDB Cluster URL
 //const dbUrl = 'mongodb+srv://admin:dummy@cluster1-ojzmt.mongodb.net/node-angular?retryWrites=true&w=majority'
 const dbUrl = 'mongodb://admin:dummy@localhost:27017'
 

@@ -1,5 +1,6 @@
 const express = require('express');
 const Post = require('../models/post');
+const checkAuth = require('../middleware/check-auth');
 const multer = require('multer');
 
 const router = express.Router();
@@ -30,46 +31,53 @@ const storage = multer.diskStorage({
 });
 
 // Multer will extract image
-router.post('', multer({ storage: storage }).single('image'), (req, res, nex) => {
-  const url = req.protocol + '://' + req.get('host');
-  const post = Post({
-    title: req.body.title,
-    content: req.body.content,
-    imagePath: url + '/images/' + req.file.filename
+router.post(
+  '',
+  checkAuth,
+  multer({ storage: storage }).single('image'),
+  (req, res, nex) => {
+    const url = req.protocol + '://' + req.get('host');
+    const post = Post({
+      title: req.body.title,
+      content: req.body.content,
+      imagePath: url + '/images/' + req.file.filename
+    });
+    post.save().then(createdPost => {
+      res.status(201).json({
+        message: 'Post added successfully',
+        post: {
+          ...createdPost,
+          id: createdPost._id
+          // Spread operator gets all of these
+          //title: createdPost.title,
+          //content: createdPost.content,
+          //imagePath: createdPost.imagePath
+        }
+      })
+    });
   });
-  post.save().then(createdPost => {
-    res.status(201).json({
-      message: 'Post added successfully',
-      post: {
-        ...createdPost,
-        id: createdPost._id
-        // Spread operator gets all of these
-        //title: createdPost.title,
-        //content: createdPost.content,
-        //imagePath: createdPost.imagePath
-      }
-    })
-  });
-});
 
-router.post('', (req, res, nex) => {
-  const post = Post({
-    title: req.body.title,
-    content: req.body.content
-  });
-  post.save().then(createdPost => {
+router.post(
+  '',
+  (req, res, nex) => {
+    const post = Post({
+      title: req.body.title,
+      content: req.body.content
+    });
+    post.save().then(createdPost => {
+      res.status(201).json({
+        message: 'Post added successfully',
+        postId: createdPost._id
+      })
+    }); // mongoose, creates query based on model.
     res.status(201).json({
-      message: 'Post added successfully',
-      postId: createdPost._id
-    })
-  }); // mongoose, creates query based on model.
-  res.status(201).json({
-    message: 'Post added successfully!'
-  }); // OK
-});
+      message: 'Post added successfully!'
+    }); // OK
+  });
 
 router.put(
   '/:id',
+  checkAuth,
   multer({ storage: storage }).single('image'),
   (req, res, next) => {
     let imagePath = req.body.imagePath;
@@ -103,7 +111,7 @@ router.get('', (req, res, next) => {
   postQuery
     .then(documents => {
       fetchedPosts = documents;
-      return Post.count();
+      return Post.countDocuments();
     })
     .then(count => {
       res.status(200).json({
@@ -125,7 +133,7 @@ router.get('/:id'), (req, res, next) => {
   });
 }
 
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', checkAuth, (req, res, next) => {
   Post.deleteOne({ _id: req.params.id }).then(result => {
     console.log(result);
   });
