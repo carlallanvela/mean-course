@@ -38,15 +38,17 @@ export class AuthService {
     const authData: AuthData = { email, password };
     this.http
       .post('http://localhost:3000/api/user/signup', authData)
-      .subscribe(response => {
-        console.log(response);
+      .subscribe(() => {
+        this.router.navigate(['/']);
+      }, error => {
+        this.authStatusListener.next(false);
       });
   }
 
   login(email: string, password: string) {
     const authData: AuthData = { email, password };
     this.http
-      .post<{ token: string; expiresIn: number, userId: string }>(
+      .post<{ token: string; expiresIn: number; userId: string }>(
         'http://localhost:3000/api/user/login',
         authData
       )
@@ -61,11 +63,15 @@ export class AuthService {
           // Inform that user is authenticated
           this.authStatusListener.next(true);
           const now = new Date();
-          const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+          const expirationDate = new Date(
+            now.getTime() + expiresInDuration * 1000
+          );
           this.saveAuthData(token, expirationDate, this.userId);
           // Route to home
           this.router.navigate(['/']);
         }
+      }, error => {
+        this.authStatusListener.next(false);
       });
   }
 
@@ -83,7 +89,7 @@ export class AuthService {
   private setAuthTimer(duration: number) {
     // Set timeout
     this.tokenTimer = setTimeout(() => {
-     this.logout();
+      this.logout();
     }, duration * 1000);
   }
 
