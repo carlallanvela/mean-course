@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
     // Get token from Bearer [token]
     const token = req.headers.authorization.split(' ')[1];
     // Verify token with secret
-    const decodedToken = jwt.verify(token, 'secret_this_should_be_longer');
+    const decodedToken = jwt.verify(token, process.env.JWT_KEY);
     // Express.js let's us add data in request
     req.userData = {
       email: decodedToken.email,
