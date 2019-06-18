@@ -10,23 +10,9 @@ Run `npm run start:serve` for a back end dev server. Navigate to `http://localho
 
 ## Production server
 
-Used AWS Elastic Beanstalk and AWS S3. Uploaded backend zip to Elastic Beanstalk and built front end using `ng build --prod` to build distribution and uplad it to S3.
+Used AWS Elastic Beanstalk and AWS S3. Uploaded backend zip to Elastic Beanstalk and built front end using `ng build --prod` to build distribution and upload it to S3.
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+http://mean-course-front-end.s3-website.us-east-2.amazonaws.com/
 
 ## Further help
 
