@@ -24,10 +24,11 @@ const app = express();
 // ]});
 
 // MongoDB Cluster URL
-//const dbUrl = 'mongodb+srv://admin:dummy@cluster1-ojzmt.mongodb.net/node-angular?retryWrites=true&w=majority'
-const dbUrl = 'mongodb://admin1:' +
- process.env.MONGO_ATLAS_PW +
- '@127.0.0.1:27017'
+const dbUrl = 'mongodb+srv://admin:' + process.env.MONGO_ATLAS_PW +
+'@cluster1-ojzmt.mongodb.net/node-angular?retryWrites=true&w=majority';
+// const dbUrl = 'mongodb://admin1:' +
+// process.env.MONGO_ATLAS_PW +
+//  '@127.0.0.1:27017'
 
 mongoose.connect(
   dbUrl
@@ -45,7 +46,7 @@ mongoose.connect(
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // Any requests targeting /images will be allowed to continue.
-app.use('/images', express.static(path.join('backend/images')));
+app.use('/images', express.static(path.join('images')));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
