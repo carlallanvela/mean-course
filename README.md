@@ -10,7 +10,7 @@ Run `npm run start:serve` for a back end dev server. Navigate to `http://localho
 
 ## Production server
 
-Used AWS Elastic Beanstalk. Uploaded backend zip to Elastic Beanstalk and built front end using `ng build --prod` to build distribution.
+Used AWS Elastic Beanstalk and AWS S3. Uploaded backend zip to Elastic Beanstalk and built front end using `ng build --prod` to build distribution and uplad it to S3.
 
 ## Code scaffolding
 
