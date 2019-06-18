@@ -1,47 +1,22 @@
 const express = require('express');
 const checkAuth = require('../middleware/check-auth');
-const multer = require('multer');
+const extractFile = require('../middleware/file');
 const router = express.Router();
 
 const PostsController = require('../controllers/posts');
-
-const MIME_TYPE_MAP = {
-  'image/png': 'png',
-  'image/jpeg': 'jpg',
-  'img/jpg': 'jpg'
-};
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const isValid = MIME_TYPE_MAP[file.mimetype];
-    let error = new Error('Invalid mime type');
-    if (isValid) {
-      error = null;
-    }
-    cb(error, 'backend/images');
-  },
-  filename: (rq, file, cb) => {
-    const name = file.originalname
-      .toLowerCase()
-      .split(' ')
-      .join('-');
-    const ext = MIME_TYPE_MAP[file.mimetype];
-    cb(null, name + '-' + Date.now() + '.' + ext);
-  }
-});
 
 // Multer will extract image
 router.post(
   '',
   checkAuth,
-  multer({ storage: storage }).single('image'),
+  extractFile,
   PostsController.createPost
 );
 
 router.put(
   '/:id',
   checkAuth,
-  multer({ storage: storage }).single('image'),
+  extractFile,
   PostsController.updatePost
 );
 
