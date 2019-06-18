@@ -25,7 +25,7 @@ const app = express();
 
 // MongoDB Cluster URL
 //const dbUrl = 'mongodb+srv://admin:dummy@cluster1-ojzmt.mongodb.net/node-angular?retryWrites=true&w=majority'
-const dbUrl = 'mongodb://admin:dummy@localhost:27017'
+const dbUrl = 'mongodb://admin1:dummy@127.0.0.1:27017'
 
 mongoose.connect(
   dbUrl
