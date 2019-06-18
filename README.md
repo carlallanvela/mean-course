@@ -8,6 +8,10 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 
 Run `npm run start:serve` for a back end dev server. Navigate to `http://localhost:3000/`. 
 
+## Production server
+
+Used AWS Elastic Beanstalk. Uploaded backend zip to Elastic Beanstalk and built front end using `ng build --prod` to build distribution.
+
 ## Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
